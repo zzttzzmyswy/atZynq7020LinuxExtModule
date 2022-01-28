@@ -1,1 +1,0 @@
-cmd_/home/zzt/xilinx/project/petalinux/kernel_no1/src/module_src/helloworld/hello.mod := { echo  /home/zzt/xilinx/project/petalinux/kernel_no1/src/module_src/helloworld/hello.o;  echo; } > /home/zzt/xilinx/project/petalinux/kernel_no1/src/module_src/helloworld/hello.mod

@@ -1,1 +1,0 @@
-cmd_/home/zzt/xilinx/project/petalinux/kernel_no1/src/module_src/helloworld/Module.symvers := sed 's/ko$$/o/' /home/zzt/xilinx/project/petalinux/kernel_no1/src/module_src/helloworld/modules.order | scripts/mod/modpost -m    -o /home/zzt/xilinx/project/petalinux/kernel_no1/src/module_src/helloworld/Module.symvers -e -i Module.symvers   -T -
