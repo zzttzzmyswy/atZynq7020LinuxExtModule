@@ -1,5 +1,5 @@
 #Makefile文件
-PROFILE=misc_hello
+PROFILE=misc_beep_gpio
 
 obj-m := $(PROFILE).o 
 PWD := $(shell pwd) 
