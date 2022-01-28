@@ -1,0 +1,37 @@
+{
+    "files.exclude": {
+        "**/.*.*.cmd": true,
+        "**/.*.d": true,
+        "**/.*.S": true
+    },
+    "[c]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 8,
+        "editor.insertSpaces": false,
+        "editor.rulers": [80]
+    },
+    "C_Cpp.default.intelliSenseMode": "gcc-arm",
+    "C_Cpp.intelliSenseEngineFallback": "Enabled",
+    "C_Cpp.intelliSenseEngine": "Default",
+    "files.associations": {
+        "*.cjson": "jsonc",
+        "*.wxss": "css",
+        "*.wxs": "javascript",
+        "kernel.h": "c"
+    },
+    
+    // "bracket-pair-colorizer-2.colors": [
+    //     "Red",
+    //     "DodgerBlue",
+    //     "Chartreuse",
+    //     "OrangeRed",
+    //     "Gold",
+    //     "LightSkyBlue"
+    // ]
+    // "bracket-pair-colorizer-2.scopeLineCSS": [
+    //     "borderStyle : solid",
+    //     "borderWidth : 1px",
+    //     "borderColor : {color}",
+    //     "opacity: 0.5"
+    // ]
+}

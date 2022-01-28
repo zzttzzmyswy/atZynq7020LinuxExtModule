@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-arm",
+            "compileCommands": "${workspaceFolder}/compile_commands.json",
+            "compilerPath": "/home/zzt/gcc-for-arm/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-gcc",
+            "includePath": ["${workspaceFolder}/**","/home/zzt/gcc-for-arm/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/include/**"]
+        }
+    ],
+    "version": 4
+}
