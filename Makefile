@@ -15,6 +15,3 @@ all:
 clean:
 	+$(foreach N,$(dirs),make -C $(N) clean;) 
 
-dclean:
-	@rm -rf output/*
-	@make clean
