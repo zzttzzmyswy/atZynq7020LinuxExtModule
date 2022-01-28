@@ -1,5 +1,5 @@
 #Makefile文件
-PROFILE=hello
+PROFILE=misc_hello
 
 obj-m := $(PROFILE).o 
 PWD := $(shell pwd) 
