@@ -7,7 +7,10 @@
             "intelliSenseMode": "gcc-arm",
             "compileCommands": "${workspaceFolder}/compile_commands.json",
             "compilerPath": "/home/zzt/gcc-for-arm/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-gcc",
-            "includePath": ["${workspaceFolder}/**","/home/zzt/gcc-for-arm/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/include/**"]
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/home/zzt/xilinx/project/petalinux/kernel_no1/src/linux-xlnx/include/**"
+            ]
         }
     ],
     "version": 4

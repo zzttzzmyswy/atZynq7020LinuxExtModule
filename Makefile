@@ -14,5 +14,5 @@ all:
 
 clean:
 	+$(foreach N,$(dirs),make -C $(N) clean;) 
-	rm -f compile_commands.json
+#	rm -f compile_commands.json
 
