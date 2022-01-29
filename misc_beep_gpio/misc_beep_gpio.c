@@ -4,11 +4,13 @@
  * @Autor: ZZT
  * @Date: 2022-01-28 19:36:18
  * @LastEditors: ZZT
- * @LastEditTime: 2022-01-28 21:15:45
+ * @LastEditTime: 2022-01-29 11:11:15
  */
 #include<linux/module.h>
 #include<linux/kernel.h>
 #include<linux/init.h>
+
+/* 使用了设备文件操作接口 */
 #include<linux/fs.h>
 
 /* 在此使用设备树模式的gpio子系统 */
@@ -53,12 +55,12 @@ static ssize_t mybeep_write(struct file *filp, const char __user *buf,
 	if ('0' == kern_buf[0])
 	{
 		printk(KERN_INFO "beep get info 0\r\n");
-		gpiod_set_value(my_beep_dev_data->gpio,0);
+		gpiod_set_value_cansleep(my_beep_dev_data->gpio,0);
 	}
 	else
 	{
 		printk(KERN_INFO "beep get info not 0\r\n");
-		gpiod_set_value(my_beep_dev_data->gpio,1);
+		gpiod_set_value_cansleep(my_beep_dev_data->gpio,1);
 	}
 	return cnt;
 }
@@ -91,7 +93,6 @@ static int my_beep_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev,my_beep_dev_data);
 
 	return misc_register(&(my_beep_dev_data->miscdev));
-
 }
 
 static int my_beep_remove(struct platform_device *pdev)
