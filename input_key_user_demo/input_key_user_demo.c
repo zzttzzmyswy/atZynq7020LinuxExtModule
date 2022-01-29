@@ -4,7 +4,7 @@
  * @Autor: ZZT
  * @Date: 2022-01-29 12:10:48
  * @LastEditors: ZZT
- * @LastEditTime: 2022-01-29 13:15:50
+ * @LastEditTime: 2022-01-29 14:12:28
  */
 #include <stdio.h>
 #include <sys/types.h>
@@ -15,12 +15,14 @@
 #include <linux/input.h>
 #include <unistd.h>
 
+#define ev_value(_value) (_value==1?"press":_value==2?"long press":"release")
+
 int main(int argc, char *argv[])
 {
 	int fd, ret;
 	struct input_event ev;
 	if (2 != argc) {
-		printf("Usage: ./input_key_user_demo /dev/input/eventX");
+		printf("使用实例: ./input_key_user_demo /dev/input/eventX\r\n");
 		return -1;
 	}
 
@@ -41,23 +43,23 @@ int main(int argc, char *argv[])
 				{
 				case KEY_UP:
 					printf("key up is %s\r\n"
-					,ev.value==1?"press":"release");
+					,ev_value(ev.value));
 					break;
 				case KEY_DOWN:
 					printf("key down is %s\r\n"
-					,ev.value==1?"press":"release");
+					,ev_value(ev.value));
 					break;
 				case KEY_ENTER:
 					printf("key enter is %s\r\n"
-					,ev.value==1?"press":"release");
+					,ev_value(ev.value));
 					break;
 				case KEY_LEFT:
 					printf("key left is %s\r\n"
-					,ev.value==1?"press":"release");
+					,ev_value(ev.value));
 					break;
 				case KEY_RIGHT:
 					printf("key right is %s\r\n"
-					,ev.value==1?"press":"release");
+					,ev_value(ev.value));
 					break;
 				default:
 					printf("can't know inf by key code\r\n");
