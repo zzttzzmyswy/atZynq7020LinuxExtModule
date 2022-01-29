@@ -1,8 +1,8 @@
 #Makefile文件
 modules:
-	echo "output modules"
+	$(info  "output modules")
 all:
-	echo "output all"
+	$(info  "output all")
 clean:
 	rm -f *.ko
-	echo "output clean"
+	$(info "output clean")

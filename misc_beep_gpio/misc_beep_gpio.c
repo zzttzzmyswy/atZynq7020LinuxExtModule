@@ -4,7 +4,7 @@
  * @Autor: ZZT
  * @Date: 2022-01-28 19:36:18
  * @LastEditors: ZZT
- * @LastEditTime: 2022-01-29 11:13:27
+ * @LastEditTime: 2022-01-29 14:00:56
  */
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -50,7 +50,7 @@ static ssize_t mybeep_write(struct file *filp, const char __user *buf,
 	ret = copy_from_user(kern_buf, buf, cnt);
 	if (0 > ret) {
 		printk(KERN_ERR
-		       "mybeep: Failed to copy data from user buffer\r\n");
+			"mybeep: Failed to copy data from user buffer\r\n");
 		return -EFAULT;
 	}
 	if ('0' == kern_buf[0]) {

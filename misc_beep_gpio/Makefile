@@ -1,20 +1,16 @@
-#Makefile文件
-PWD:=$(shell pwd) 
-CFILE:=$(shell basename ${PWD})
-obj-m:=$(CFILE).o 
+SOURCES := $(filter-out $(wildcard *.mod.c),$(wildcard *.c))
+TARGET := misc_beep_gpio.o
+PWD := $(shell pwd) 
+obj-m := ${TARGET}
 
 .PHONY: modules clean
 
-modules: 
-	$(echo "the project is $(CFILE)")
-	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
-	cp ${CFILE}.ko ../output
-	
-
-# 外部模块，不需要modules_install
-# modules_install: 
-# 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules_install 
+modules: ${TARGET}
 
 clean:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
 
+${TARGET} : $(SOURCES)
+	$(info the target is $(obj-m))
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+	cp *.ko ../output
