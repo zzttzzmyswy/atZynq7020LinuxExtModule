@@ -4,7 +4,7 @@
  * @Autor: ZZT
  * @Date: 2022-01-28 19:36:18
  * @LastEditors: ZZT
- * @LastEditTime: 2022-01-28 20:50:30
+ * @LastEditTime: 2022-01-28 21:15:45
  */
 #include<linux/module.h>
 #include<linux/kernel.h>
@@ -51,10 +51,16 @@ static ssize_t mybeep_write(struct file *filp, const char __user *buf,
 		return -EFAULT;
 	}
 	if ('0' == kern_buf[0])
-		gpiod_set_value_cansleep(my_beep_dev_data->gpio,0);
+	{
+		printk(KERN_INFO "beep get info 0\r\n");
+		gpiod_set_value(my_beep_dev_data->gpio,0);
+	}
 	else
-		gpiod_set_value_cansleep(my_beep_dev_data->gpio,1);
-	return 0;
+	{
+		printk(KERN_INFO "beep get info not 0\r\n");
+		gpiod_set_value(my_beep_dev_data->gpio,1);
+	}
+	return cnt;
 }
 
 static struct file_operations mybeep_fops = {
@@ -67,7 +73,7 @@ static struct file_operations mybeep_fops = {
 static int my_beep_probe(struct platform_device *pdev)
 {
 	/* struct my_beep_gpio_dev *my_beep_dev_data; */
-
+	dev_info(&pdev->dev, "BEEP driver has been probe!\n");
 	my_beep_dev_data = devm_kzalloc(&pdev->dev, 
 					sizeof(*my_beep_dev_data), GFP_KERNEL);
 	if (!my_beep_dev_data)
@@ -107,7 +113,7 @@ beep {
 
  /* 匹配列表 */
 static const struct of_device_id beep_of_match[] = {
-	{ .compatible = "alientek,beeper" },
+	{ .compatible = "gpio-beep-by-zzt" },
 	{ /* Sentinel */ }
 };
 
@@ -123,4 +129,5 @@ static struct platform_driver mybeep_driver = {
 module_platform_driver(mybeep_driver);
 
 MODULE_AUTHOR("zzttzz <2775859312@qq.com>");
+MODULE_DESCRIPTION("Generic GPIO beeper driver");
 MODULE_LICENSE("GPL");
