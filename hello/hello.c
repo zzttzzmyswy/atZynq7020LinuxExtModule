@@ -4,7 +4,7 @@
  * @Autor: ZZT
  * @Date: 2022-01-29 11:49:47
  * @LastEditors: ZZT
- * @LastEditTime: 2022-01-29 11:49:47
+ * @LastEditTime: 2022-01-29 14:19:49
  */
 /*
  * @Description: 
@@ -18,12 +18,12 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 
-static int hello_init(void)
+static int __init hello_init(void)
 {
 	printk("Hello word");
 	return 0;
 }
-static void hello_exit(void)
+static void __exit hello_exit(void)
 {
 	printk("Goodbye world");
 }
