@@ -6,4 +6,4 @@
 *.cmd
 *.mod
 .*.cmd
-compile_commands.json
+compile_commands.*

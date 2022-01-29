@@ -1,10 +1,12 @@
 #Makefile文件
+PWD:=$(shell pwd) 
 CFILE:=$(shell basename ${PWD})
 obj-m:=$(CFILE).o 
-PWD:=$(shell pwd) 
+
+.PHONY: modules clean
 
 modules: 
-	echo $(CFILES)
+	$(echo "the project is $(CFILE)")
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
 	cp ${CFILE}.ko ../output
 	
