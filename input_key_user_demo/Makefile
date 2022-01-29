@@ -11,5 +11,6 @@ clean:
 $(TARGET) : $(SOURCES)
 	$(info CC $@)
 	$(hide) $(CC) $(SOURCES) -o ${TARGET}
-	cp ${TARGET} ../output
+	$(hide) chmod +x ${TARGET}
+	$(hide) cp ${TARGET} ../output
 
