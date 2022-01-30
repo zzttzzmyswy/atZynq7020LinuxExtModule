@@ -4,7 +4,7 @@
  * @Autor: ZZT
  * @Date: 2022-01-29 19:16:27
  * @LastEditors: ZZT
- * @LastEditTime: 2022-01-30 17:00:53
+ * @LastEditTime: 2022-01-30 19:09:53
  */
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -13,6 +13,7 @@
 #include <linux/platform_device.h>
 #include <linux/fb.h>
 #include <linux/dma/xilinx_dma.h>
+#include <linux/pwm.h>
 #include <linux/of.h>
 #include <linux/of_gpio.h>
 #include <linux/of_dma.h>
@@ -329,7 +330,7 @@ static int vdmafb_init_vdma(struct xilinx_vdmafb_dev *fbdev)
 	}
 
 	/* 终止VDMA通道数据传输 */
-	// dmaengine_terminate_all(fbdev->vdma);
+	dmaengine_terminate_all(fbdev->vdma);
 
 	/* 初始化VDMA通道 */
 	dma_template.dir         = DMA_MEM_TO_DEV;
@@ -412,6 +413,7 @@ static int vdmafb_init_vtc(struct xilinx_vdmafb_dev *fbdev,
 	config.vsize = vmode->vactive + vmode->vfront_porch + 
 		vmode->vsync_len + vmode->vback_porch;
 	config.fps = (u32)vmode->pixelclock / (config.hsize * config.vsize);
+	//config.fps = 60;
 
 	xvtc_generator_stop(fbdev->vtc);
 
@@ -429,6 +431,7 @@ static int vdmafb_probe(struct platform_device *pdev)
 	struct xilinx_vdmafb_dev *ddev;
 	struct fb_info *info;
 	struct videomode vmode;
+	struct pwm_device *pwm;
 	int ret;
 
 	/* 实例化一个fb_info结构体对象 */
@@ -496,6 +499,11 @@ static int vdmafb_probe(struct platform_device *pdev)
 	}
 
 	/* 打开LCD背光 */
+	/* 打开LCD背光 */
+	pwm = devm_pwm_get(&pdev->dev, NULL);
+	pwm_config(pwm, 5000000, 5000000);	// 配置PWM
+	pwm_enable(pwm);		// 使能PWM打开背光
+	pwm_free(pwm);
 	/* 全部注释掉 TODO
 	ddev->bl_gpio = of_get_named_gpio(pdev->dev.of_node, "bl-gpio", 0);
 	if (!gpio_is_valid(ddev->bl_gpio)) {
