@@ -4,7 +4,7 @@
  * @Autor: ZZT
  * @Date: 2022-01-29 19:16:27
  * @LastEditors: ZZT
- * @LastEditTime: 2022-01-30 19:09:53
+ * @LastEditTime: 2022-01-30 19:57:01
  */
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -499,12 +499,13 @@ static int vdmafb_probe(struct platform_device *pdev)
 	}
 
 	/* 打开LCD背光 */
-	/* 打开LCD背光 */
+	/* 全部注释掉 TODO
+
 	pwm = devm_pwm_get(&pdev->dev, NULL);
 	pwm_config(pwm, 5000000, 5000000);	// 配置PWM
 	pwm_enable(pwm);		// 使能PWM打开背光
 	pwm_free(pwm);
-	/* 全部注释掉 TODO
+
 	ddev->bl_gpio = of_get_named_gpio(pdev->dev.of_node, "bl-gpio", 0);
 	if (!gpio_is_valid(ddev->bl_gpio)) {
 		dev_err(&pdev->dev, "Failed to get lcd backlight gpio\n");
