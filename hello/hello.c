@@ -4,7 +4,7 @@
  * @Autor: ZZT
  * @Date: 2022-01-29 11:49:47
  * @LastEditors: ZZT
- * @LastEditTime: 2022-01-29 14:19:49
+ * @LastEditTime: 2022-01-30 09:02:52
  */
 /*
  * @Description: 
@@ -20,7 +20,9 @@
 
 static int __init hello_init(void)
 {
-	printk("Hello word");
+	int a = 100;
+	float b = 120;
+	printk("Hello word %f",b/a);
 	return 0;
 }
 static void __exit hello_exit(void)
