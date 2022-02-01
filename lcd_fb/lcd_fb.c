@@ -4,7 +4,7 @@
  * @Autor: ZZT
  * @Date: 2022-01-29 19:16:27
  * @LastEditors: ZZT
- * @LastEditTime: 2022-01-30 19:57:01
+ * @LastEditTime: 2022-02-01 15:26:22
  */
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -42,45 +42,46 @@ struct xilinx_vdmafb_dev {
 	int bl_gpio; // LCD背光引脚
 };
 
-static int vdmafb_setcolreg(unsigned regno, unsigned red,
-			unsigned green, unsigned blue,
-			unsigned transp, struct fb_info *fb_info)
+static int vdmafb_setcolreg(unsigned regno, unsigned red, unsigned green,
+			    unsigned blue, unsigned transp,
+			    struct fb_info *fb_info)
 {
 	u32 tmp;
 
 	if (regno >= 16)
 		return 1;
 
-	red >>= 8; green >>= 8; blue >>= 8;
+	red >>= 8;
+	green >>= 8;
+	blue >>= 8;
 	tmp = (red << 16) | (green << 8) | blue;
-	((u32*)(fb_info->pseudo_palette))[regno] = tmp;
+	((u32 *)(fb_info->pseudo_palette))[regno] = tmp;
 
 	return 0;
 }
 
 static int vdmafb_check_var(struct fb_var_screeninfo *var,
-			struct fb_info *fb_info)
+			    struct fb_info *fb_info)
 {
 	struct fb_var_screeninfo *fb_var = &fb_info->var;
 	memcpy(var, fb_var, sizeof(struct fb_var_screeninfo));
 	return 0;
 }
 
-
 /* Frame Buffer操作函数集 */
 static struct fb_ops vdmafb_ops = {
 	.owner = THIS_MODULE,
 	/* set color register 设置颜色寄存器 */
-	.fb_setcolreg	= vdmafb_setcolreg,
-	 /* 用于校验可变参数 fb_var_screeninfo */
-	.fb_check_var	= vdmafb_check_var, 
+	.fb_setcolreg = vdmafb_setcolreg,
+	/* 用于校验可变参数 fb_var_screeninfo */
+	.fb_check_var = vdmafb_check_var,
 	/* 矩形绘制 区域拷贝 图像绘制 使用fb子系统预先设定函数 
 	`Generic' versions of the frame buffer device operations
 	drivers/video/fbdev/core/cfbfillrect.c
 	*/
-	.fb_fillrect	= cfb_fillrect,
-	.fb_copyarea	= cfb_copyarea,
-	.fb_imageblit	= cfb_imageblit,
+	.fb_fillrect = cfb_fillrect,
+	.fb_copyarea = cfb_copyarea,
+	.fb_imageblit = cfb_imageblit,
 };
 
 /* 解析设备树获取LCD时序参数 */
@@ -310,42 +311,48 @@ static int vdmafb_init_fbinfo(struct xilinx_vdmafb_dev *fbdev,
 	return 0;
 }
 
-static struct dma_interleaved_template dma_template = {0};
-
 /* 初始化VDMA */
 static int vdmafb_init_vdma(struct xilinx_vdmafb_dev *fbdev)
 {
 	struct device *dev = &fbdev->pdev->dev;
 	struct fb_info *info = fbdev->info;
-	
+
 	struct dma_async_tx_descriptor *tx_desc;
-	struct xilinx_vdma_config vdma_config = {0};
+	struct xilinx_vdma_config vdma_config = { 0 };
+
+	struct dma_interleaved_template *dma_template =
+		devm_kmalloc(&(fbdev->pdev->dev),
+			     sizeof(struct dma_interleaved_template),
+			     GFP_KERNEL);
+	if(!dma_template) {
+		dev_err(dev, "Failed to request vdma struct memory\n");
+		return PTR_ERR(dma_template);
+	}
 
 	/* 申请VDMA通道 */
 	fbdev->vdma = of_dma_request_slave_channel(dev->of_node, "lcd_vdma");
 	if (IS_ERR(fbdev->vdma)) {
 		dev_err(dev, "Failed to request vdma channel\n");
-		//return PTR_ERR(fbdev->vdma);
-		return -1;
+		return PTR_ERR(fbdev->vdma);
 	}
 
 	/* 终止VDMA通道数据传输 */
 	dmaengine_terminate_all(fbdev->vdma);
 
 	/* 初始化VDMA通道 */
-	dma_template.dir         = DMA_MEM_TO_DEV;
-	dma_template.numf        = info->var.yres;
-	dma_template.sgl[0].size = info->fix.line_length;
-	dma_template.frame_size  = 1;
-	dma_template.sgl[0].icg  = 0;
-	dma_template.src_start   = info->fix.smem_start;	// 物理地址
-	dma_template.src_sgl     = 1;
-	dma_template.src_inc     = 1;
-	dma_template.dst_inc     = 0;
-	dma_template.dst_sgl     = 0;
+	dma_template->dir = DMA_MEM_TO_DEV;
+	dma_template->numf = info->var.yres;
+	dma_template->sgl[0].size = info->fix.line_length;
+	dma_template->frame_size = 1;
+	dma_template->sgl[0].icg = 0;
+	dma_template->src_start = info->fix.smem_start; // 物理地址
+	dma_template->src_sgl = 1;
+	dma_template->src_inc = 1;
+	dma_template->dst_inc = 0;
+	dma_template->dst_sgl = 0;
 
-	tx_desc = dmaengine_prep_interleaved_dma(fbdev->vdma, &dma_template,
-			DMA_CTRL_ACK | DMA_PREP_INTERRUPT);
+	tx_desc = dmaengine_prep_interleaved_dma(
+		fbdev->vdma, dma_template, DMA_CTRL_ACK | DMA_PREP_INTERRUPT);
 	if (!tx_desc) {
 		dev_err(dev, "Failed to prepare DMA descriptor\n");
 		dma_release_channel(fbdev->vdma);
@@ -384,7 +391,7 @@ static int vdmafb_init_vtc(struct xilinx_vdmafb_dev *fbdev,
 		dev_err(dev, "Failed to probe VTC\n");
 		return PTR_ERR(fbdev->vtc);
 	}
-	
+
 	/* 
 	htotal = vm->hactive + vm->hfront_porch + vm->hsync_len +
 		vm->hback_porch;
@@ -402,22 +409,22 @@ static int vdmafb_init_vtc(struct xilinx_vdmafb_dev *fbdev,
 	*/
 	config.hblank_start = vmode->hactive;
 	config.hsync_start = vmode->hactive + vmode->hsync_len;
-	config.hsync_end = vmode->hactive + vmode->hsync_len + 
-		vmode->hfront_porch;
-	config.hsize = vmode->hactive + vmode->hfront_porch + 
-		vmode->hsync_len + vmode->hback_porch;
+	config.hsync_end =
+		vmode->hactive + vmode->hsync_len + vmode->hfront_porch;
+	config.hsize = vmode->hactive + vmode->hfront_porch + vmode->hsync_len +
+		       vmode->hback_porch;
 	config.vblank_start = vmode->vactive;
 	config.vsync_start = vmode->vactive + vmode->vsync_len;
-	config.vsync_end = vmode->vactive + vmode->vsync_len + 
-		vmode->vfront_porch;
-	config.vsize = vmode->vactive + vmode->vfront_porch + 
-		vmode->vsync_len + vmode->vback_porch;
+	config.vsync_end =
+		vmode->vactive + vmode->vsync_len + vmode->vfront_porch;
+	config.vsize = vmode->vactive + vmode->vfront_porch + vmode->vsync_len +
+		       vmode->vback_porch;
 	config.fps = (u32)vmode->pixelclock / (config.hsize * config.vsize);
 	//config.fps = 60;
 
 	xvtc_generator_stop(fbdev->vtc);
 
-	return xvtc_generator_start(fbdev->vtc,&config);
+	return xvtc_generator_start(fbdev->vtc, &config);
 	//xilinx_vtc_reset(fbdev->vtc); /* 复位vtc */
 	//xilinx_vtc_disable(fbdev->vtc); /* 禁止vtc */
 	//xilinx_vtc_config_sig(fbdev->vtc, vmode); /* 配置vtc时序参数 */
@@ -431,7 +438,7 @@ static int vdmafb_probe(struct platform_device *pdev)
 	struct xilinx_vdmafb_dev *ddev;
 	struct fb_info *info;
 	struct videomode vmode;
-	struct pwm_device *pwm;
+	/* struct pwm_device *pwm; pwm由背光控制驱动控制 */
 	int ret;
 
 	/* 实例化一个fb_info结构体对象 */
@@ -520,7 +527,7 @@ static int vdmafb_probe(struct platform_device *pdev)
 	*/
 
 	platform_set_drvdata(pdev, ddev);
-	dev_dbg(&(pdev->dev),"vdmafb probe\r\n");
+	dev_dbg(&(pdev->dev), "vdmafb probe\r\n");
 	return 0;
 
 out7:
@@ -533,7 +540,7 @@ out6:
 	dma_release_channel(ddev->vdma);
 out5:
 	/* 禁止vtc时序控制器 */
-	xvtc_generator_stop(ddev->vtc);	
+	xvtc_generator_stop(ddev->vtc);
 out4:
 	/* 禁止时钟输出 */
 	clk_disable_unprepare(ddev->pclk);
@@ -548,7 +555,7 @@ out2:
 out1:
 	/* 释放fb_info对象 */
 	framebuffer_release(info);
-	dev_err(&(pdev->dev),"vdmafb probe err: %d\r\n",ret);
+	dev_err(&(pdev->dev), "vdmafb probe err: %d\r\n", ret);
 	return ret;
 }
 
@@ -564,10 +571,10 @@ static int vdmafb_remove(struct platform_device *pdev)
 	xvtc_generator_stop(ddev->vtc);
 	clk_disable_unprepare(ddev->pclk);
 	fb_dealloc_cmap(&info->cmap);
-	dma_free_wc(&pdev->dev, info->screen_size,
-				info->screen_base, info->fix.smem_start);
+	dma_free_wc(&pdev->dev, info->screen_size, info->screen_base,
+		    info->fix.smem_start);
 	framebuffer_release(info);
-	dev_dbg(&(pdev->dev),"vdmafb remove\r\n");
+	dev_dbg(&(pdev->dev), "vdmafb remove\r\n");
 	return 0;
 }
 
@@ -576,7 +583,7 @@ static void vdmafb_shutdown(struct platform_device *pdev)
 	struct xilinx_vdmafb_dev *ddev = platform_get_drvdata(pdev);
 	xvtc_generator_stop(ddev->vtc);
 	clk_disable_unprepare(ddev->pclk);
-	dev_dbg(&(pdev->dev),"vdmafb shutdown\r\n");
+	dev_dbg(&(pdev->dev), "vdmafb shutdown\r\n");
 }
 
 static const struct of_device_id vdmafb_of_match_table[] = {
