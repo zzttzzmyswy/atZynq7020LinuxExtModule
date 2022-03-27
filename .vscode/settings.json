@@ -13,6 +13,12 @@
     "C_Cpp.default.intelliSenseMode": "gcc-arm",
     "C_Cpp.intelliSenseEngineFallback": "Enabled",
     "C_Cpp.intelliSenseEngine": "Default",
+    "files.associations": {
+        "*.cjson": "jsonc",
+        "*.wxss": "css",
+        "*.wxs": "javascript",
+        "type_traits": "c"
+    },
     // "files.associations": {
     //     "*.cjson": "jsonc",
     //     "*.wxss": "css",
