@@ -17,7 +17,10 @@
         "*.cjson": "jsonc",
         "*.wxss": "css",
         "*.wxs": "javascript",
-        "type_traits": "c"
+        "type_traits": "c",
+        "math.h": "c",
+        "cmath": "c",
+        "*.tcc": "c"
     },
     // "files.associations": {
     //     "*.cjson": "jsonc",
