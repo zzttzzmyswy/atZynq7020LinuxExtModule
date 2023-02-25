@@ -43,6 +43,10 @@ int main(int argc, char *argv[])
 		}
 		sleep(2);
 	}
+	for (ik = 0; ik < PAGE_SIZE; ik++) {
+			//p_map[ik] = (ik > PAGE_SIZE / 2) ? 0XEE : 0X11;
+			p_map[ik] = (unsigned char)(0);
+		}
 
 here:
 	munmap(p_map, PAGE_SIZE);
