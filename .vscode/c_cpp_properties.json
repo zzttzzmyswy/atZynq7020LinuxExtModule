@@ -9,7 +9,8 @@
             "compilerPath": "/home/zzt/gcc-for-arm/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-gcc",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/zzt/xilinx/project/petalinux/kernel_no1/src/linux-xlnx/include/**"
+                "/home/zzt/xilinx/project/petalinux/kernel/src/kernel/linux-xlnx-xlnx_rebase_v5.10_2021.2/include/**",
+                "/home/zzt/gcc-for-arm/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/include/**"
             ]
         }
     ],

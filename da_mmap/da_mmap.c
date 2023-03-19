@@ -36,10 +36,9 @@ int main(int argc, char *argv[])
 	for (i = 1; i <= 8; i++) {
 		for (ik = 0; ik < PAGE_SIZE; ik++) {
 			//p_map[ik] = (ik > PAGE_SIZE / 2) ? 0XEE : 0X11;
-			p_map[ik] = (unsigned char)(((sin((ik * 1.0 * i / PAGE_SIZE) *
-							  (2.0 * PI))) +
-						     1.0) *
-						    0x80);
+			p_map[ik] = (unsigned char)(((
+				sin((ik * 1.0 * i / PAGE_SIZE) * 
+				(2.0 * PI))) + 1.0) * 0x80);
 		}
 		sleep(2);
 	}

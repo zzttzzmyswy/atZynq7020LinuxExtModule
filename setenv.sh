@@ -15,9 +15,9 @@ source ${env_dir}/${env_file}
 
 export KERNELDIR=/home/zzt/xilinx/project/petalinux/kernel/src/kernel/linux-xlnx-xlnx_rebase_v5.10_2021.2
 
-if [ $SHELL == "/bin/zsh" ]; then
+if [[ $SHELL =~ "/bin/zsh" ]]; then
     zsh;
-elif [ $SHELL == "/bin/csh" ]; then
+elif [[ $SHELL =~ "/bin/csh" ]]; then
     csh;
 else
     bash;

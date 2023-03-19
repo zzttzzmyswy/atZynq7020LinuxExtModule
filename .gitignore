@@ -8,3 +8,4 @@
 .*.cmd
 compile_commands.*
 *.yuv
+.vscode-ctags

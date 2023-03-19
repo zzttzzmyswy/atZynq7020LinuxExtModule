@@ -20,7 +20,9 @@
         "type_traits": "c",
         "math.h": "c",
         "cmath": "c",
-        "*.tcc": "c"
+        "*.tcc": "c",
+        "module.h": "c",
+        "init.h": "c"
     },
     // "files.associations": {
     //     "*.cjson": "jsonc",
